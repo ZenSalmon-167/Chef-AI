@@ -1,3 +1,4 @@
+
 import { GoogleGenAI } from "@google/genai";
 import React, { useState } from 'react';
 import { Recipe } from '../types';
@@ -15,7 +16,7 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
   const [formData, setFormData] = useState({
     submitter: '',
     year: 'ปวช.1',
-    department: 'เทคนิคคอมพิวเตอร์',
+    department: 'แผนกเทคนิคคอมพิวเตอร์',
     ingredients: '',
     method: 'ทอด',
     media: 'น้ำมัน',
@@ -124,6 +125,24 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
     }
   };
 
+  const departments = [
+    "แผนกช่างยนต์",
+    "แผนกช่างกลโรงงาน",
+    "แผนกช่างเชื่อมโลหะ",
+    "แผนกช่างไฟฟ้า",
+    "แผนกช่างอิเล็กทรอนิกส์",
+    "แผนกเมคคาทรอนิกส์",
+    "แผนกเทคนิคคอมพิวเตอร์",
+    "แผนกการบัญชี",
+    "แผนกการตลาด",
+    "แผนกธุรกิจค้าปลีก",
+    "แผนกโลจิสติกส์",
+    "แผนกธุรกิจดิจิทัล",
+    "แผนกการโรงแรม",
+    "แผนกการท่องเที่ยว",
+    "แผนกอาหารและโภชนาการ"
+  ];
+
   if (step === 2) {
     return (
       <div className="space-y-8 animate-fade-in">
@@ -209,10 +228,9 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
               onChange={e => setFormData({...formData, department: e.target.value})} 
               className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-100 text-slate-900 font-medium outline-none cursor-pointer focus:ring-2 focus:ring-orange-200 transition-all"
             >
-              <option>เทคนิคคอมพิวเตอร์</option>
-              <option>โภชนาการ</option>
-              <option>การโรงแรม</option>
-              <option>การตลาด</option>
+              {departments.map(dept => (
+                <option key={dept} value={dept}>{dept}</option>
+              ))}
             </select>
           </div>
         </div>
