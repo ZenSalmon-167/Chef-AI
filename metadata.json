@@ -1,0 +1,5 @@
+{
+  "name": "AI Chef Master - ระบบจัดการสูตรอาหารอัจฉริยะ",
+  "description": "ระบบรังสรรค์และจัดการสูตรอาหารด้วย Gemini AI เชื่อมต่อ Google Sheets สำหรับการเรียนรู้ Full-stack Development",
+  "requestFramePermissions": []
+}
