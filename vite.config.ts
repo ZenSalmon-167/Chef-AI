@@ -2,16 +2,16 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
-  // โหลดค่าจากไฟล์ .env
-  const env = loadEnv(mode, (process as any).cwd(), '');
+  // โหลดค่าจาก .env ในเครื่อง (ถ้ามี)
+  const env = loadEnv(mode, process.cwd(), '');
   
-  // รวมค่าจากไฟล์ .env และค่าจาก System Environment (กรณีรันบน Server/Netlify)
-  const apiKey = env.API_KEY || process.env.API_KEY || "";
+  // ลำดับการหาคีย์: 1. จากระบบ (Netlify) 2. จากไฟล์ .env
+  const apiKey = process.env.API_KEY || env.API_KEY || "";
 
   return {
     plugins: [react()],
     define: {
-      // ฉีดค่า API_KEY เข้าไปในโค้ดฝั่ง Client
+      // ส่งค่าไปให้โค้ด React ใช้งานผ่าน process.env.API_KEY
       'process.env.API_KEY': JSON.stringify(apiKey)
     },
     server: {

@@ -38,11 +38,11 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
   };
 
   const generateRecipes = async () => {
-    // ดึงค่าจาก process.env ที่ Vite ฉีดเข้ามาให้
+    // ดึงค่าจาก process.env ที่ Vite ฉีดเข้ามาให้ผ่านการ define ใน vite.config.ts
     const apiKey = process.env.API_KEY;
     
     if (!apiKey || apiKey.length < 10) {
-      alert('⚠️ ไม่พบกุญแจ AI!\n\nวิธีแก้:\n1. หากรันในเครื่อง: ตรวจสอบไฟล์ .env ว่าพิมพ์ API_KEY=... (ห้ามมีเว้นวรรค)\n2. หากรันบน Netlify: ไปที่ Site Configuration > Environment variables แล้วเพิ่ม API_KEY\n3. สำคัญ: หลังจากแก้ .env ต้องปิด Terminal แล้วรัน npm run dev ใหม่');
+      alert('⚠️ ไม่พบกุญแจ AI!\n\nวิธีแก้:\n1. หากรันใน VS Code: ปิด Terminal แล้วรัน npm run dev ใหม่\n2. ตรวจสอบไฟล์ .env ว่าไม่มีช่องว่างหน้า/หลัง API_KEY\n3. หากอยู่บน Netlify: เพิ่ม API_KEY ใน Environment variables');
       return;
     }
 
