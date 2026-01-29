@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 import React, { useState } from 'react';
 import { Recipe } from '../types';
@@ -23,6 +22,24 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
     style: 'ไทย'
   });
 
+  const departments = [
+    "แผนกช่างยนต์",
+    "แผนกช่างกลโรงงาน",
+    "แผนกช่างเชื่อมโลหะ",
+    "แผนกช่างไฟฟ้า",
+    "แผนกช่างอิเล็กทรอนิกส์",
+    "แผนกเมคคาทรอนิกส์",
+    "แผนกเทคนิคคอมพิวเตอร์",
+    "แผนกการบัญชี",
+    "แผนกการตลาด",
+    "แผนกธุรกิจค้าปลีก",
+    "แผนกโลจิสติกส์",
+    "แผนกธุรกิจดิจิทัล",
+    "แผนกการโรงแรม",
+    "แผนกการท่องเที่ยว",
+    "แผนกอาหารและโภชนาการ"
+  ];
+
   const getSection = (text: string, startMarker: string, endMarker?: string) => {
     const startIdx = text.indexOf(startMarker);
     if (startIdx === -1) return '';
@@ -32,9 +49,8 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
   };
 
   const generateRecipes = async () => {
-    // ตรวจสอบการมีอยู่ของ API_KEY
     if (!process.env.API_KEY || process.env.API_KEY === "undefined") {
-      alert('⚠️ ไม่พบกุญแจ AI! กรุณาตั้งค่า API_KEY ในระบบ Netlify หรือไฟล์ .env');
+      alert('⚠️ ไม่พบกุญแจ AI หรือกุญแจถูกระงับ! กรุณาตรวจสอบ API_KEY ในไฟล์ .env หรือ Netlify');
       return;
     }
 
@@ -80,7 +96,7 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
       setStep(2);
     } catch (error: any) {
       console.error("AI Error:", error);
-      alert(`เกิดข้อผิดพลาด: ${error.message || 'AI ไม่ตอบสนอง'}`);
+      alert(`เกิดข้อผิดพลาดจาก AI: ${error.message || 'กรุณาตรวจสอบว่าคุณใช้ API Key ใหม่แล้วหรือไม่'}`);
     } finally {
       setLoading(false);
     }
@@ -125,31 +141,13 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
     }
   };
 
-  const departments = [
-    "แผนกช่างยนต์",
-    "แผนกช่างกลโรงงาน",
-    "แผนกช่างเชื่อมโลหะ",
-    "แผนกช่างไฟฟ้า",
-    "แผนกช่างอิเล็กทรอนิกส์",
-    "แผนกเมคคาทรอนิกส์",
-    "แผนกเทคนิคคอมพิวเตอร์",
-    "แผนกการบัญชี",
-    "แผนกการตลาด",
-    "แผนกธุรกิจค้าปลีก",
-    "แผนกโลจิสติกส์",
-    "แผนกธุรกิจดิจิทัล",
-    "แผนกการโรงแรม",
-    "แผนกการท่องเที่ยว",
-    "แผนกอาหารและโภชนาการ"
-  ];
-
   if (step === 2) {
     return (
       <div className="space-y-8 animate-fade-in">
         <div className="flex items-center justify-between bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
           <div>
             <h2 className="text-2xl font-bold text-slate-800">เลือกสูตรที่คุณชอบที่สุด</h2>
-            <p className="text-slate-400 text-sm italic">รังสรรค์มาให้ 3 แบบ จากวัตถุดิบเดิมของคุณ</p>
+            <p className="text-slate-400 text-sm italic">รังสรรค์มาให้ 3 แบบ สำหรับเด็ก{formData.department}</p>
           </div>
           <button onClick={() => setStep(1)} className="px-6 py-2 bg-slate-100 text-slate-500 font-bold rounded-xl text-sm hover:bg-slate-200 transition-all">
             เริ่มใหม่
@@ -228,7 +226,7 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
               onChange={e => setFormData({...formData, department: e.target.value})} 
               className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-100 text-slate-900 font-medium outline-none cursor-pointer focus:ring-2 focus:ring-orange-200 transition-all"
             >
-              {departments.map(dept => (
+              {departments.map((dept) => (
                 <option key={dept} value={dept}>{dept}</option>
               ))}
             </select>
