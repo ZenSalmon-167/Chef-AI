@@ -24,15 +24,17 @@ const QuickRecipe: React.FC<QuickRecipeProps> = ({ onSave }) => {
   };
 
   const fetchRecipe = async () => {
-    if (!process.env.API_KEY || process.env.API_KEY === "undefined") {
-      alert('⚠️ ไม่พบกุญแจ AI! กรุณาตั้งค่า API_KEY ในระบบ Netlify หรือไฟล์ .env');
+    const apiKey = process.env.API_KEY;
+    
+    if (!apiKey || apiKey.length < 10) {
+      alert('⚠️ ไม่พบกุญแจ AI! กรุณาตั้งค่า API_KEY ในระบบ');
       return;
     }
 
     if (!menuName.trim()) return;
     setLoading(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenAI({ apiKey: apiKey });
       const prompt = `คุณคือเชฟ เขียนสูตรอาหาร "${menuName}" โดยใช้วัตถุดิบพื้นฐานตามความจริง 
       [TITLE]ชื่อเมนู[/TITLE]
       [STYLE]สไตล์อาหาร[/STYLE]

@@ -23,21 +23,10 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
   });
 
   const departments = [
-    "แผนกช่างยนต์",
-    "แผนกช่างกลโรงงาน",
-    "แผนกช่างเชื่อมโลหะ",
-    "แผนกช่างไฟฟ้า",
-    "แผนกช่างอิเล็กทรอนิกส์",
-    "แผนกเมคคาทรอนิกส์",
-    "แผนกเทคนิคคอมพิวเตอร์",
-    "แผนกการบัญชี",
-    "แผนกการตลาด",
-    "แผนกธุรกิจค้าปลีก",
-    "แผนกโลจิสติกส์",
-    "แผนกธุรกิจดิจิทัล",
-    "แผนกการโรงแรม",
-    "แผนกการท่องเที่ยว",
-    "แผนกอาหารและโภชนาการ"
+    "แผนกช่างยนต์", "แผนกช่างกลโรงงาน", "แผนกช่างเชื่อมโลหะ", "แผนกช่างไฟฟ้า",
+    "แผนกช่างอิเล็กทรอนิกส์", "แผนกเมคคาทรอนิกส์", "แผนกเทคนิคคอมพิวเตอร์",
+    "แผนกการบัญชี", "แผนกการตลาด", "แผนกธุรกิจค้าปลีก", "แผนกโลจิสติกส์",
+    "แผนกธุรกิจดิจิทัล", "แผนกการโรงแรม", "แผนกการท่องเที่ยว", "แผนกอาหารและโภชนาการ"
   ];
 
   const getSection = (text: string, startMarker: string, endMarker?: string) => {
@@ -49,11 +38,11 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
   };
 
   const generateRecipes = async () => {
-    // ตรวจสอบความถูกต้องของ API Key
+    // ดึงค่าจาก process.env ที่ Vite ฉีดเข้ามาให้
     const apiKey = process.env.API_KEY;
     
-    if (!apiKey || apiKey === "" || apiKey === "undefined") {
-      alert('⚠️ ไม่พบกุญแจ AI!\nวิธีแก้:\n1. ตรวจสอบไฟล์ .env ว่ามีบรรทัด API_KEY=... หรือยัง\n2. หากรันบน Netlify ให้ไปตั้งค่าที่ Environment Variables\n3. ลองปิดแล้วรัน npm run dev ใหม่');
+    if (!apiKey || apiKey.length < 10) {
+      alert('⚠️ ไม่พบกุญแจ AI!\n\nวิธีแก้:\n1. หากรันในเครื่อง: ตรวจสอบไฟล์ .env ว่าพิมพ์ API_KEY=... (ห้ามมีเว้นวรรค)\n2. หากรันบน Netlify: ไปที่ Site Configuration > Environment variables แล้วเพิ่ม API_KEY\n3. สำคัญ: หลังจากแก้ .env ต้องปิด Terminal แล้วรัน npm run dev ใหม่');
       return;
     }
 
@@ -93,17 +82,13 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
         media: formData.media
       }));
 
-      if (parsedRecipes.length === 0) throw new Error("AI ส่งข้อมูลกลับมาไม่ตรงตามรูปแบบ");
+      if (parsedRecipes.length === 0) throw new Error("AI ส่งข้อมูลกลับมาไม่ตรงรูปแบบ");
       
       setGeneratedRecipes(parsedRecipes);
       setStep(2);
     } catch (error: any) {
       console.error("AI Error:", error);
-      if (error.message?.includes('403')) {
-        alert('❌ Error 403: กุญแจ API นี้ถูกระงับ (Leaked) กรุณาสร้างรหัสใหม่ที่ AI Studio ครับ');
-      } else {
-        alert(`เกิดข้อผิดพลาด: ${error.message || 'AI ไม่ตอบสนอง'}`);
-      }
+      alert(`เกิดข้อผิดพลาด: ${error.message || 'AI ไม่ตอบสนอง'}`);
     } finally {
       setLoading(false);
     }
