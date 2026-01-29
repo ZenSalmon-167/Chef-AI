@@ -49,8 +49,11 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
   };
 
   const generateRecipes = async () => {
-    if (!process.env.API_KEY || process.env.API_KEY === "undefined") {
-      alert('⚠️ ไม่พบกุญแจ AI หรือกุญแจถูกระงับ! กรุณาตรวจสอบ API_KEY ในไฟล์ .env หรือ Netlify');
+    // ตรวจสอบความถูกต้องของ API Key
+    const apiKey = process.env.API_KEY;
+    
+    if (!apiKey || apiKey === "" || apiKey === "undefined") {
+      alert('⚠️ ไม่พบกุญแจ AI!\nวิธีแก้:\n1. ตรวจสอบไฟล์ .env ว่ามีบรรทัด API_KEY=... หรือยัง\n2. หากรันบน Netlify ให้ไปตั้งค่าที่ Environment Variables\n3. ลองปิดแล้วรัน npm run dev ใหม่');
       return;
     }
 
@@ -61,7 +64,7 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
 
     setLoading(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenAI({ apiKey: apiKey });
       const prompt = `คุณคือเชฟที่เชี่ยวชาญ รังสรรค์เมนู 3 สูตรที่แตกต่างกันจากวัตถุดิบ: ${formData.ingredients} 
       โดยใช้วิธี: ${formData.method} และใช้ ${formData.media} เป็นตัวกลาง 
       สไตล์: ${formData.style}
@@ -96,7 +99,11 @@ const RecipeGenerator: React.FC<RecipeGeneratorProps> = ({ scriptUrl, onSave }) 
       setStep(2);
     } catch (error: any) {
       console.error("AI Error:", error);
-      alert(`เกิดข้อผิดพลาดจาก AI: ${error.message || 'กรุณาตรวจสอบว่าคุณใช้ API Key ใหม่แล้วหรือไม่'}`);
+      if (error.message?.includes('403')) {
+        alert('❌ Error 403: กุญแจ API นี้ถูกระงับ (Leaked) กรุณาสร้างรหัสใหม่ที่ AI Studio ครับ');
+      } else {
+        alert(`เกิดข้อผิดพลาด: ${error.message || 'AI ไม่ตอบสนอง'}`);
+      }
     } finally {
       setLoading(false);
     }
